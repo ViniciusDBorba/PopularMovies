@@ -11,10 +11,10 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
-        release {
-            buildConfigField 'String', 'MOVIEDB_KEY', '"?api_key=[YOUR_API_KEY_HERE]"'
-            buildConfigField 'String', 'MOVIE_BASE_URL', '"http://api.themoviedb.org/3/movie/"'
-            buildConfigField 'String', 'IMAGE_BASE_URL', '"http://image.tmdb.org/t/p/w185"'
+        debug {
+            buildConfigField 'String', 'MOVIEDB_KEY', '"?api_key=[YOUR-API-KEY-HERE]"'
+            buildConfigField 'String', 'MOVIE_BASE_URL', '"http://api.themoviedb.org/3/"'
+            buildConfigField 'String', 'IMAGE_BASE_URL', '"http://image.tmdb.org/t/p/w185/"'
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }

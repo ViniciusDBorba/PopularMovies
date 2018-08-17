@@ -28,7 +28,6 @@ public class MainActivity extends AppCompatActivity {
 
         presenter = new MainActivityPresenter(this);
 
-        adapter = presenter.getMoviesAdapter();
 
     }
 
@@ -37,6 +36,17 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
 
         moviesRecycler.setLayoutManager(presenter.getRecyclerLayoutManager());
-        moviesRecycler.setAdapter(adapter);
+
+        if (adapter == null)
+            presenter.getMoviesAdapter();
+        else
+            moviesRecycler.setAdapter(adapter);
+
+
+    }
+
+    public void setMoviesRecyclerAdapter(MoviesAdapter moviesAdapter) {
+        this.adapter = moviesAdapter;
+        moviesRecycler.setAdapter(moviesAdapter);
     }
 }
