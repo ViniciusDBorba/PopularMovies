@@ -43,4 +43,9 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesViewHolder> {
     public MovieDTO getItem(int position) {
         return movies.get(position);
     }
+
+    public void filterMovies(ResultDTO resultDTO) {
+        this.movies = resultDTO.getResults();
+        this.notifyDataSetChanged();
+    }
 }

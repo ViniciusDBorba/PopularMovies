@@ -1,5 +1,6 @@
 package com.udacity.nanodegree.popularmovies.ui.activities.presenters;
 
+import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,6 +11,7 @@ import com.udacity.nanodegree.popularmovies.services.MoviesService;
 import com.udacity.nanodegree.popularmovies.data.ResultDTO;
 import com.udacity.nanodegree.popularmovies.ui.activities.MainActivity;
 import com.udacity.nanodegree.popularmovies.ui.activities.adapters.MoviesAdapter;
+import com.udacity.nanodegree.popularmovies.utils.LayoutUtils;
 import com.udacity.nanodegree.popularmovies.utils.RetrofitUtils;
 
 import retrofit2.Call;
@@ -27,27 +29,35 @@ public class MainActivityPresenter {
     }
 
     public RecyclerView.LayoutManager getRecyclerLayoutManager() {
-        return new GridLayoutManager(mainActivity, getSpanCount(), LinearLayoutManager.VERTICAL, false);
+        return new GridLayoutManager(mainActivity, LayoutUtils.getSpanCount(mainActivity),
+                LinearLayoutManager.VERTICAL, false);
     }
 
-    private int getSpanCount() {
-        DisplayMetrics displayMetrics = mainActivity.getResources().getDisplayMetrics();
-        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
-        return (int) (dpWidth / 180);
-    }
 
     public void getMoviesAdapter() {
         moviesService.getMovies(mainActivity.getString(R.string.query_popular)).enqueue(new Callback<ResultDTO>() {
             @Override
-            public void onResponse(Call<ResultDTO> call, Response<ResultDTO> response) {
-
-                if (response.body() != null)
-                    mainActivity.setMoviesRecyclerAdapter(new MoviesAdapter(response.body()));
+            public void onResponse(@NonNull Call<ResultDTO> call, @NonNull Response<ResultDTO> response) {
+                mainActivity.setMoviesRecyclerAdapter(new MoviesAdapter(response.body()));
             }
 
             @Override
-            public void onFailure(Call<ResultDTO> call, Throwable t) {
+            public void onFailure(@NonNull Call<ResultDTO> call, @NonNull Throwable t) {
+                t.printStackTrace();
+            }
+        });
+    }
 
+    public void filterMovies(String string) {
+        moviesService.getMovies(string).enqueue(new Callback<ResultDTO>() {
+            @Override
+            public void onResponse(@NonNull Call<ResultDTO> call, @NonNull Response<ResultDTO> response) {
+                mainActivity.adapter.filterMovies(response.body());
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ResultDTO> call, @NonNull Throwable t) {
+                t.printStackTrace();
             }
         });
     }

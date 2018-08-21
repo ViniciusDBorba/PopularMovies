@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="default_elevation">8dp</dimen>
+    <dimen name="title_padding">10dp</dimen>
+    <dimen name="poster_list_height">260dp</dimen>
+    <dimen name="item_margim">2dp</dimen>
+</resources>
