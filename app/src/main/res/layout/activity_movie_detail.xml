@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/dark_gray">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <FrameLayout
+            android:id="@+id/vote_average_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/default_margin"
+            android:background="@drawable/round_accent_background"
+            android:padding="@dimen/default_padding"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/movie_vote_average"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </FrameLayout>
+
+
+        <ImageView
+            android:id="@+id/movie_poster"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/item_movie_poster_view_description"
+            android:minHeight="400dp"
+            android:minWidth="200dp"
+            app:layout_constraintBottom_toTopOf="@+id/movie_title"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/movie_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="@dimen/default_padding"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/movie_overview"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+        <TextView
+            android:id="@+id/movie_overview"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/default_padding"
+            android:text="@string/app_name"
+            android:textColor="@android:color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+    </android.support.constraint.ConstraintLayout>
+
+</ScrollView>
