@@ -12,7 +12,6 @@ import com.bumptech.glide.request.RequestOptions;
 import com.udacity.nanodegree.popularmovies.BuildConfig;
 import com.udacity.nanodegree.popularmovies.R;
 import com.udacity.nanodegree.popularmovies.data.MovieDTO;
-import com.udacity.nanodegree.popularmovies.ui.activities.presenters.MovieDetailPresenter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -22,17 +21,15 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     @BindView(R.id.movie_poster)
     ImageView moviePoster;
-
     @BindView(R.id.movie_title)
     TextView movieTitle;
-
     @BindView(R.id.movie_overview)
     TextView movieOverview;
-
     @BindView(R.id.movie_vote_average)
     TextView voteAverage;
+    @BindView(R.id.movie_release_date)
+    TextView releaseDate;
 
-    private MovieDetailPresenter presenter;
     private MovieDTO movie;
 
     @Override
@@ -41,7 +38,8 @@ public class MovieDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_movie_detail);
         ButterKnife.bind(this);
 
-        this.presenter = new MovieDetailPresenter();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
     }
 
     @Override
@@ -69,5 +67,6 @@ public class MovieDetailActivity extends AppCompatActivity {
         movieTitle.setText(movie.getOriginalTitle());
         movieOverview.setText(movie.getOverview());
         voteAverage.setText(String.valueOf(movie.getVoteAverage()));
+        releaseDate.setText(getResources().getString(R.string.release_date, movie.getReleaseDate()));
     }
 }
