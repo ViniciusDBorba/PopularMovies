@@ -77,10 +77,15 @@ public class MainActivityPresenter {
         moviesService.getMovies(string, page).enqueue(new Callback<ResultDTO>() {
             @Override
             public void onResponse(@NonNull Call<ResultDTO> call, @NonNull Response<ResultDTO> response) {
-                if (page <= 1)
+                if (mainActivity.adapter == null) {
+                    mainActivity.setMoviesRecyclerAdapter(new MoviesAdapter());
+                }
+
+                if (page <= 1) {
                     mainActivity.adapter.filterMovies(response.body());
-                else
+                } else {
                     mainActivity.adapter.addMovies(response.body());
+                }
 
                 mainActivity.loading = false;
                 mainActivity.toggleLoading();

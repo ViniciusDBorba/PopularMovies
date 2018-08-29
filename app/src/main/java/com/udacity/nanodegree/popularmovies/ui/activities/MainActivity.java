@@ -3,17 +3,20 @@ package com.udacity.nanodegree.popularmovies.ui.activities;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.util.Consumer;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.udacity.nanodegree.popularmovies.R;
 import com.udacity.nanodegree.popularmovies.data.MovieDTO;
 import com.udacity.nanodegree.popularmovies.ui.activities.adapters.MoviesAdapter;
 import com.udacity.nanodegree.popularmovies.ui.activities.presenters.MainActivityPresenter;
+import com.udacity.nanodegree.popularmovies.utils.InternetCheckerAsyncTask;
 
 import java.util.List;
 
@@ -55,10 +58,23 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState != null) {
             refresh(savedInstanceState);
         }
+
+        new InternetCheckerAsyncTask(new Consumer<Boolean>() {
+            @Override
+            public void accept(Boolean internet) {
+                if (!internet){
+                    Toast.makeText(MainActivity.this, MainActivity.this.getResources().getString(R.string.no_internet), Toast.LENGTH_LONG).show();
+                }
+            }
+        }).execute();
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        if (adapter == null) {
+            return;
+        }
+
         outState.putInt(PAGE_STATE, presenter.getPage());
         outState.putString(QUERY_STATE, presenter.getQuery());
         outState.putParcelableArrayList(ITEMS_STATE, adapter.getItems());
@@ -94,6 +110,11 @@ public class MainActivity extends AppCompatActivity {
     public void refresh(Bundle state) {
         moviesRecycler.setLayoutManager(presenter.getRecyclerLayoutManager());
         String query = state.getString(QUERY_STATE);
+
+        if (query == null) {
+            return;
+        }
+
         presenter.setQuery(query);
 
         if (query.equals(getResources().getString(R.string.query_popular))) {
@@ -139,6 +160,7 @@ public class MainActivity extends AppCompatActivity {
 
         mostRatedOption.setTextColor(Color.WHITE);
         popularOption.setTextColor(getResources().getColor(R.color.font_disabled));
+
         presenter.filterMovies(getResources().getString(R.string.query_top_rated), 1);
     }
 
@@ -152,6 +174,7 @@ public class MainActivity extends AppCompatActivity {
 
         mostRatedOption.setTextColor(getResources().getColor(R.color.font_disabled));
         popularOption.setTextColor(Color.WHITE);
+
         presenter.filterMovies(getResources().getString(R.string.query_popular), 1);
     }
 
