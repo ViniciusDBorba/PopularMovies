@@ -1,5 +1,6 @@
 package com.udacity.nanodegree.popularmovies.ui.activities.adapters;
 
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,14 +14,15 @@ import com.udacity.nanodegree.popularmovies.data.ResultDTO;
 import java.util.ArrayList;
 import java.util.List;
 
-import retrofit2.Call;
-
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesViewHolder> {
 
     private List<MovieDTO> movies = new ArrayList<>();
 
     public MoviesAdapter(ResultDTO result) {
         movies.addAll(result.getResults());
+    }
+
+    public MoviesAdapter() {
     }
 
     @NonNull
@@ -46,6 +48,20 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesViewHolder> {
 
     public void filterMovies(ResultDTO resultDTO) {
         this.movies = resultDTO.getResults();
+        this.notifyDataSetChanged();
+    }
+
+    public void addMovies(ResultDTO resultDTO) {
+        this.movies.addAll(resultDTO.getResults());
+        this.notifyDataSetChanged();
+    }
+
+    public ArrayList<MovieDTO> getItems() {
+        return new ArrayList<>(movies);
+    }
+
+    public void setItems(List<MovieDTO> items) {
+        this.movies = items;
         this.notifyDataSetChanged();
     }
 }

@@ -2,6 +2,7 @@ package com.udacity.nanodegree.popularmovies.ui.activities;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -37,6 +38,17 @@ public class MovieDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
         ButterKnife.bind(this);
+
+        setupActionBar();
+
+    }
+
+    private void setupActionBar() {
+        ActionBar actionBar = getSupportActionBar();
+
+        if (actionBar == null) {
+            return;
+        }
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);

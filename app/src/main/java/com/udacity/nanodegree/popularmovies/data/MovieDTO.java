@@ -1,5 +1,8 @@
 package com.udacity.nanodegree.popularmovies.data;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -7,7 +10,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MovieDTO implements Serializable {
+public class MovieDTO implements Parcelable {
 
 
     @Expose
@@ -47,10 +50,6 @@ public class MovieDTO implements Serializable {
     private String originalTitle;
 
     @Expose
-    @SerializedName("genre_ids")
-    private List<Integer> genreIds = new ArrayList<>();
-
-    @Expose
     @SerializedName("backdrop_path")
     private String backdropPath;
 
@@ -70,7 +69,7 @@ public class MovieDTO implements Serializable {
 
     }
 
-    public MovieDTO(int id, int voteCount, boolean video, float voteAverage, String title, float popularity, String posterPath, String originalLanguage, String originalTitle, List<Integer> genreIds, String backdropPath, boolean adult, String overview, String releaseDate) {
+    public MovieDTO(int id, int voteCount, boolean video, float voteAverage, String title, float popularity, String posterPath, String originalLanguage, String originalTitle, String backdropPath, boolean adult, String overview, String releaseDate) {
         this.id = id;
         this.voteCount = voteCount;
         this.video = video;
@@ -80,11 +79,26 @@ public class MovieDTO implements Serializable {
         this.posterPath = posterPath;
         this.originalLanguage = originalLanguage;
         this.originalTitle = originalTitle;
-        this.genreIds = genreIds;
         this.backdropPath = backdropPath;
         this.adult = adult;
         this.overview = overview;
         this.releaseDate = releaseDate;
+    }
+
+    protected MovieDTO(Parcel in) {
+        id = in.readInt();
+        voteCount = in.readInt();
+        video = in.readByte() != 0;
+        voteAverage = in.readFloat();
+        title = in.readString();
+        popularity = in.readFloat();
+        posterPath = in.readString();
+        originalLanguage = in.readString();
+        originalTitle = in.readString();
+        backdropPath = in.readString();
+        adult = in.readByte() != 0;
+        overview = in.readString();
+        releaseDate = in.readString();
     }
 
     public int getId() {
@@ -159,14 +173,6 @@ public class MovieDTO implements Serializable {
         this.originalTitle = originalTitle;
     }
 
-    public List<Integer> getGenreIds() {
-        return genreIds;
-    }
-
-    public void setGenreIds(List<Integer> genreIds) {
-        this.genreIds = genreIds;
-    }
-
     public String getBackdropPath() {
         return backdropPath;
     }
@@ -198,4 +204,38 @@ public class MovieDTO implements Serializable {
     public void setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeFloat(id);
+        dest.writeFloat(voteCount);
+        dest.writeByte((byte) (video ? 1 : 0));
+        dest.writeFloat(voteAverage);
+        dest.writeString(title);
+        dest.writeFloat(popularity);
+        dest.writeString(posterPath);
+        dest.writeString(originalLanguage);
+        dest.writeString(originalTitle);
+        dest.writeString(backdropPath);
+        dest.writeByte((byte) (adult ? 1 : 0));
+        dest.writeString(overview);
+        dest.writeString(releaseDate);
+    }
+
+    public static final Creator<MovieDTO> CREATOR = new Creator<MovieDTO>() {
+        @Override
+        public MovieDTO createFromParcel(Parcel in) {
+            return new MovieDTO(in);
+        }
+
+        @Override
+        public MovieDTO[] newArray(int size) {
+            return new MovieDTO[size];
+        }
+    };
 }
