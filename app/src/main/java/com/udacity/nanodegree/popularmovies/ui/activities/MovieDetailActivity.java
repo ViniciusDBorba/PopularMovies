@@ -59,7 +59,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         super.onResume();
 
         if (movie == null) {
-            movie = (MovieDTO) getIntent().getSerializableExtra(MOVIE_EXTRA);
+            movie = getIntent().getParcelableExtra(MOVIE_EXTRA);
             refreshView();
         }
     }

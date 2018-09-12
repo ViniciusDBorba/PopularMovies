@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -70,10 +70,36 @@
             android:layout_height="wrap_content"
             android:padding="@dimen/default_padding"
             android:textColor="@android:color/white"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/movies_recycler"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent" />
 
+        <com.udacity.nanodegree.popularmovies.ui.components.SaveInstanceRecyclerView
+            android:id="@+id/trailers_recycler"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/dark_gray"
+            android:padding="@dimen/item_margim"
+            app:layout_constraintBottom_toTopOf="@+id/reviews_recycler"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/movie_release_date">
+
+        </com.udacity.nanodegree.popularmovies.ui.components.SaveInstanceRecyclerView>
+
+        <com.udacity.nanodegree.popularmovies.ui.components.SaveInstanceRecyclerView
+            android:id="@+id/reviews_recycler"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/dark_gray"
+            android:padding="@dimen/item_margim"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/trailers_recycler">
+
+        </com.udacity.nanodegree.popularmovies.ui.components.SaveInstanceRecyclerView>
+
     </android.support.constraint.ConstraintLayout>
 
-</ScrollView>
+</android.support.v4.widget.NestedScrollView>

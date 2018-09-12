@@ -12,6 +12,6 @@ import retrofit2.http.Query;
 
 public interface MoviesService {
 
-    @GET("movie/{query}" + BuildConfig.MOVIEDB_KEY)
+    @GET("movie/{query}?api_key=" + BuildConfig.MOVIEDB_KEY)
     Call<ResultDTO> getMovies(@Path("query") String query, @Query("page") int page);
 }
