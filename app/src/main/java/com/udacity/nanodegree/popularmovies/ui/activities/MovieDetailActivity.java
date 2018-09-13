@@ -13,6 +13,8 @@ import com.bumptech.glide.request.RequestOptions;
 import com.udacity.nanodegree.popularmovies.BuildConfig;
 import com.udacity.nanodegree.popularmovies.R;
 import com.udacity.nanodegree.popularmovies.data.MovieDTO;
+import com.udacity.nanodegree.popularmovies.data.MoviesResultDTO;
+import com.udacity.nanodegree.popularmovies.ui.activities.presenters.MovieDetailPresenter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,6 +32,9 @@ public class MovieDetailActivity extends AppCompatActivity {
     TextView voteAverage;
     @BindView(R.id.movie_release_date)
     TextView releaseDate;
+
+
+    private MovieDetailPresenter presenter;
 
     private MovieDTO movie;
 
@@ -62,9 +67,13 @@ public class MovieDetailActivity extends AppCompatActivity {
             movie = getIntent().getParcelableExtra(MOVIE_EXTRA);
             refreshView();
         }
+
     }
 
     private void refreshView() {
+        if (presenter == null) {
+            presenter = new MovieDetailPresenter(this);
+        }
 
         RequestOptions requestOptions = new RequestOptions();
         requestOptions = requestOptions

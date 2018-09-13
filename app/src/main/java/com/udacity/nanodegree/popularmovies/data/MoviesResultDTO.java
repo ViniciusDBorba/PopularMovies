@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ResultDTO {
+public class MoviesResultDTO {
 
     @Expose
     @SerializedName("page")
@@ -24,11 +24,11 @@ public class ResultDTO {
     @SerializedName("results")
     private List<MovieDTO> results = new ArrayList<>();
 
-    public ResultDTO() {
+    public MoviesResultDTO() {
 
     }
 
-    public ResultDTO(int page, int totalResults, int totalPages, List<MovieDTO> results) {
+    public MoviesResultDTO(int page, int totalResults, int totalPages, List<MovieDTO> results) {
         this.page = page;
         this.totalResults = totalResults;
         this.totalPages = totalPages;

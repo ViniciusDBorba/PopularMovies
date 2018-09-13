@@ -9,7 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import com.udacity.nanodegree.popularmovies.R;
 import com.udacity.nanodegree.popularmovies.data.MovieDTO;
 import com.udacity.nanodegree.popularmovies.services.MoviesService;
-import com.udacity.nanodegree.popularmovies.data.ResultDTO;
+import com.udacity.nanodegree.popularmovies.data.MoviesResultDTO;
 import com.udacity.nanodegree.popularmovies.ui.activities.MainActivity;
 import com.udacity.nanodegree.popularmovies.ui.activities.adapters.MoviesAdapter;
 import com.udacity.nanodegree.popularmovies.utils.LayoutUtils;
@@ -55,16 +55,16 @@ public class MainActivityPresenter {
             return;
         }
 
-        moviesService.getMovies(query, this.page).enqueue(new Callback<ResultDTO>() {
+        moviesService.getMovies(query, this.page).enqueue(new Callback<MoviesResultDTO>() {
             @Override
-            public void onResponse(@NonNull Call<ResultDTO> call, @NonNull Response<ResultDTO> response) {
+            public void onResponse(@NonNull Call<MoviesResultDTO> call, @NonNull Response<MoviesResultDTO> response) {
                 mainActivity.loading = false;
                 mainActivity.toggleLoading();
                 mainActivity.setMoviesRecyclerAdapter(new MoviesAdapter(response.body()));
             }
 
             @Override
-            public void onFailure(@NonNull Call<ResultDTO> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<MoviesResultDTO> call, @NonNull Throwable t) {
                 t.printStackTrace();
             }
         });
@@ -74,9 +74,9 @@ public class MainActivityPresenter {
         mainActivity.loading = true;
         mainActivity.toggleLoading();
         query = string;
-        moviesService.getMovies(string, page).enqueue(new Callback<ResultDTO>() {
+        moviesService.getMovies(string, page).enqueue(new Callback<MoviesResultDTO>() {
             @Override
-            public void onResponse(@NonNull Call<ResultDTO> call, @NonNull Response<ResultDTO> response) {
+            public void onResponse(@NonNull Call<MoviesResultDTO> call, @NonNull Response<MoviesResultDTO> response) {
                 if (mainActivity.adapter == null) {
                     mainActivity.setMoviesRecyclerAdapter(new MoviesAdapter());
                 }
@@ -92,7 +92,7 @@ public class MainActivityPresenter {
             }
 
             @Override
-            public void onFailure(@NonNull Call<ResultDTO> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<MoviesResultDTO> call, @NonNull Throwable t) {
                 t.printStackTrace();
             }
         });
