@@ -100,6 +100,16 @@
 
         </com.udacity.nanodegree.popularmovies.ui.components.SaveInstanceRecyclerView>
 
+        <android.support.v4.widget.ContentLoadingProgressBar
+            android:id="@+id/trailers_progres"
+            style="@style/Widget.AppCompat.ProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
     </android.support.constraint.ConstraintLayout>
 
 </android.support.v4.widget.NestedScrollView>

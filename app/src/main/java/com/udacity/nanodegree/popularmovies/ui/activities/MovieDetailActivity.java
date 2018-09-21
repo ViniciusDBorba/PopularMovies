@@ -1,9 +1,14 @@
 package com.udacity.nanodegree.popularmovies.ui.activities;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,7 +19,9 @@ import com.udacity.nanodegree.popularmovies.BuildConfig;
 import com.udacity.nanodegree.popularmovies.R;
 import com.udacity.nanodegree.popularmovies.data.MovieDTO;
 import com.udacity.nanodegree.popularmovies.data.MoviesResultDTO;
+import com.udacity.nanodegree.popularmovies.ui.activities.adapters.VideosAdapter;
 import com.udacity.nanodegree.popularmovies.ui.activities.presenters.MovieDetailPresenter;
+import com.udacity.nanodegree.popularmovies.ui.components.SaveInstanceRecyclerView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,11 +39,17 @@ public class MovieDetailActivity extends AppCompatActivity {
     TextView voteAverage;
     @BindView(R.id.movie_release_date)
     TextView releaseDate;
+    @BindView(R.id.trailers_recycler)
+    SaveInstanceRecyclerView trailersRecycler;
+    @BindView(R.id.trailers_progres)
+    ContentLoadingProgressBar trailersProgress;
 
+    public boolean loading = false;
 
     private MovieDetailPresenter presenter;
 
     private MovieDTO movie;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -72,8 +85,10 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     private void refreshView() {
         if (presenter == null) {
-            presenter = new MovieDetailPresenter(this);
+            presenter = new MovieDetailPresenter(this, movie);
         }
+
+
 
         RequestOptions requestOptions = new RequestOptions();
         requestOptions = requestOptions
@@ -89,5 +104,24 @@ public class MovieDetailActivity extends AppCompatActivity {
         movieOverview.setText(movie.getOverview());
         voteAverage.setText(String.valueOf(movie.getVoteAverage()));
         releaseDate.setText(getResources().getString(R.string.release_date, movie.getReleaseDate()));
+
+        trailersRecycler.setLayoutManager(presenter.getRecyclerLayoutManager());
+        presenter.loadTrailersAdapter(null);
+
+    }
+
+    public void toggleLoading() {
+        if (loading) {
+            trailersProgress.show();
+            trailersProgress.setVisibility(View.VISIBLE);
+        } else {
+            trailersProgress.hide();
+            trailersProgress.setVisibility(View.GONE);
+        }
+
+    }
+
+    public void setTrailersRecyclerAdapter(VideosAdapter videosAdapter) {
+        trailersRecycler.setAdapter(videosAdapter);
     }
 }

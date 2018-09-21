@@ -4,7 +4,21 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
+import com.udacity.nanodegree.popularmovies.data.VideoDTO;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class VideosAdapter extends RecyclerView.Adapter<VideosViewHolder> {
+
+    private List<VideoDTO> trailers = new ArrayList<>();
+
+    public VideosAdapter(List<VideoDTO> trailers) {
+        this.trailers = trailers;
+    }
+
+    public VideosAdapter() {
+    }
 
     @NonNull
     @Override
@@ -19,6 +33,10 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosViewHolder> {
 
     @Override
     public int getItemCount() {
-        return 0;
+        return trailers.size();
+    }
+
+    public void setItems(List<VideoDTO> items) {
+        this.trailers = items;
     }
 }
