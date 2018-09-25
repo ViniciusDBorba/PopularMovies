@@ -3,7 +3,7 @@ package com.udacity.nanodegree.popularmovies.data;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class VideoDTO {
+public class TrailerDTO {
 
     @Expose
     @SerializedName("id")
@@ -37,7 +37,7 @@ public class VideoDTO {
     @SerializedName("type")
     private String type;
 
-    public VideoDTO() {
+    public TrailerDTO() {
 
     }
 

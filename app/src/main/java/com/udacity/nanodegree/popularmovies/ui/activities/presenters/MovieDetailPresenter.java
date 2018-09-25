@@ -2,20 +2,15 @@ package com.udacity.nanodegree.popularmovies.ui.activities.presenters;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
-import com.udacity.nanodegree.popularmovies.R;
 import com.udacity.nanodegree.popularmovies.data.MovieDTO;
-import com.udacity.nanodegree.popularmovies.data.MoviesResultDTO;
-import com.udacity.nanodegree.popularmovies.data.VideoDTO;
+import com.udacity.nanodegree.popularmovies.data.TrailerDTO;
 import com.udacity.nanodegree.popularmovies.data.VideosResultDTO;
 import com.udacity.nanodegree.popularmovies.services.MoviesService;
 import com.udacity.nanodegree.popularmovies.ui.activities.MovieDetailActivity;
-import com.udacity.nanodegree.popularmovies.ui.activities.adapters.MoviesAdapter;
-import com.udacity.nanodegree.popularmovies.ui.activities.adapters.VideosAdapter;
-import com.udacity.nanodegree.popularmovies.utils.LayoutUtils;
+import com.udacity.nanodegree.popularmovies.ui.activities.adapters.TrailerAdapter;
 import com.udacity.nanodegree.popularmovies.utils.RetrofitUtils;
 
 import java.util.List;
@@ -27,7 +22,7 @@ import retrofit2.Response;
 public class MovieDetailPresenter {
 
     private final MoviesService moviesService;
-    private VideosAdapter adapter;
+    private TrailerAdapter adapter;
     private final MovieDetailActivity activity;
     private final MovieDTO movie;
 
@@ -41,14 +36,14 @@ public class MovieDetailPresenter {
         return new LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false);
     }
 
-    public void loadTrailersAdapter(@Nullable List<VideoDTO> items) {
+    public void loadTrailersAdapter(@Nullable List<TrailerDTO> items) {
         activity.loading = true;
         activity.toggleLoading();
 
         if (items != null) {
             activity.loading = false;
             activity.toggleLoading();
-            activity.setTrailersRecyclerAdapter(new VideosAdapter());
+            activity.setTrailersRecyclerAdapter(new TrailerAdapter());
             adapter.setItems(items);
             return;
         }
@@ -58,7 +53,9 @@ public class MovieDetailPresenter {
             public void onResponse(@NonNull Call<VideosResultDTO> call, @NonNull Response<VideosResultDTO> response) {
                 activity.loading = false;
                 activity.toggleLoading();
-                activity.setTrailersRecyclerAdapter(new VideosAdapter(response.body().getVideos()));
+                if (response.body() == null)
+                    return;
+                activity.setTrailersRecyclerAdapter(new TrailerAdapter(response.body().getVideos()));
             }
 
             @Override

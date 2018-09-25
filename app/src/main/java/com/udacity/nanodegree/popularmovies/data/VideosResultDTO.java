@@ -14,7 +14,7 @@ public class VideosResultDTO {
 
     @Expose
     @SerializedName("results")
-    private List<VideoDTO> videos = new ArrayList<>();
+    private List<TrailerDTO> videos = new ArrayList<>();
 
     public VideosResultDTO() {
     }
@@ -27,11 +27,11 @@ public class VideosResultDTO {
         this.id = id;
     }
 
-    public List<VideoDTO> getVideos() {
+    public List<TrailerDTO> getVideos() {
         return videos;
     }
 
-    public void setVideos(List<VideoDTO> videos) {
+    public void setVideos(List<TrailerDTO> videos) {
         this.videos = videos;
     }
 }

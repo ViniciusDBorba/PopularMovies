@@ -8,19 +8,16 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
 import com.udacity.nanodegree.popularmovies.BuildConfig;
 import com.udacity.nanodegree.popularmovies.R;
-import com.udacity.nanodegree.popularmovies.data.MovieDTO;
-import com.udacity.nanodegree.popularmovies.data.VideoDTO;
+import com.udacity.nanodegree.popularmovies.data.TrailerDTO;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class VideosViewHolder extends RecyclerView.ViewHolder {
+public class TrailerViewHolder extends RecyclerView.ViewHolder {
 
     private static final String TRAILER_MESSAGE = "See this movie trailer: \n." + BuildConfig.YOUTUBE_BASE_URL;
     private static final String TYPE = "text/plain";
@@ -28,15 +25,20 @@ public class VideosViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.trailer_thumbnail)
     ImageView thumbImg;
 
-    private VideoDTO item;
+    @BindView(R.id.trailer_name)
+    TextView trailerName;
 
-    public VideosViewHolder(@NonNull View itemView) {
+    private TrailerDTO item;
+
+    public TrailerViewHolder(@NonNull View itemView) {
         super(itemView);
         ButterKnife.bind(this, this.itemView);
     }
 
-    public void bind(VideoDTO item) {
+    public void bind(TrailerDTO item) {
         this.item = item;
+
+        trailerName.setText(item.getName());
     }
 
     public void onClickItem(){

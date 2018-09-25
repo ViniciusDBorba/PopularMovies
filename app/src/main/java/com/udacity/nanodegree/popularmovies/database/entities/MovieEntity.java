@@ -1,6 +1,7 @@
 package com.udacity.nanodegree.popularmovies.database.entities;
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 
 import io.reactivex.annotations.NonNull;
@@ -27,6 +28,7 @@ public class MovieEntity {
 
     }
 
+    @Ignore
     public MovieEntity(int id, int voteCount, boolean video, float voteAverage, String title, float popularity, String posterPath, String originalLanguage, String originalTitle, String backdropPath, boolean adult, String overview, String releaseDate) {
         this.id = id;
         this.voteCount = voteCount;

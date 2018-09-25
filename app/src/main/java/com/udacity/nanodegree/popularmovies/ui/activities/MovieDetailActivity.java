@@ -1,13 +1,10 @@
 package com.udacity.nanodegree.popularmovies.ui.activities;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,8 +15,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.udacity.nanodegree.popularmovies.BuildConfig;
 import com.udacity.nanodegree.popularmovies.R;
 import com.udacity.nanodegree.popularmovies.data.MovieDTO;
-import com.udacity.nanodegree.popularmovies.data.MoviesResultDTO;
-import com.udacity.nanodegree.popularmovies.ui.activities.adapters.VideosAdapter;
+import com.udacity.nanodegree.popularmovies.ui.activities.adapters.TrailerAdapter;
 import com.udacity.nanodegree.popularmovies.ui.activities.presenters.MovieDetailPresenter;
 import com.udacity.nanodegree.popularmovies.ui.components.SaveInstanceRecyclerView;
 
@@ -88,8 +84,6 @@ public class MovieDetailActivity extends AppCompatActivity {
             presenter = new MovieDetailPresenter(this, movie);
         }
 
-
-
         RequestOptions requestOptions = new RequestOptions();
         requestOptions = requestOptions
                 .centerInside()
@@ -121,7 +115,7 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     }
 
-    public void setTrailersRecyclerAdapter(VideosAdapter videosAdapter) {
-        trailersRecycler.setAdapter(videosAdapter);
+    public void setTrailersRecyclerAdapter(TrailerAdapter trailerAdapter) {
+        trailersRecycler.setAdapter(trailerAdapter);
     }
 }
