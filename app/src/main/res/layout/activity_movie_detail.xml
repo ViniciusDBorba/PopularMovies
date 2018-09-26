@@ -98,7 +98,7 @@
         </com.udacity.nanodegree.popularmovies.ui.components.SaveInstanceRecyclerView>
 
         <android.support.v4.widget.ContentLoadingProgressBar
-            android:id="@+id/trailers_progres"
+            android:id="@+id/list_progres"
             style="@style/Widget.AppCompat.ProgressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

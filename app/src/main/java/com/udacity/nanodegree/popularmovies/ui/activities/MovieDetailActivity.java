@@ -1,10 +1,14 @@
 package com.udacity.nanodegree.popularmovies.ui.activities;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -15,6 +19,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.udacity.nanodegree.popularmovies.BuildConfig;
 import com.udacity.nanodegree.popularmovies.R;
 import com.udacity.nanodegree.popularmovies.data.MovieDTO;
+import com.udacity.nanodegree.popularmovies.ui.activities.adapters.ReviewsAdapter;
 import com.udacity.nanodegree.popularmovies.ui.activities.adapters.TrailerAdapter;
 import com.udacity.nanodegree.popularmovies.ui.activities.presenters.MovieDetailPresenter;
 import com.udacity.nanodegree.popularmovies.ui.components.SaveInstanceRecyclerView;
@@ -37,14 +42,18 @@ public class MovieDetailActivity extends AppCompatActivity {
     TextView releaseDate;
     @BindView(R.id.trailers_recycler)
     SaveInstanceRecyclerView trailersRecycler;
-    @BindView(R.id.trailers_progres)
-    ContentLoadingProgressBar trailersProgress;
+    @BindView(R.id.reviews_recycler)
+    SaveInstanceRecyclerView reviewsRcycler;
+    @BindView(R.id.list_progres)
+    ContentLoadingProgressBar listLoading;
 
     public boolean loading = false;
 
     private MovieDetailPresenter presenter;
 
     private MovieDTO movie;
+
+    private int listThreshold = 3;
 
 
     @Override
@@ -102,20 +111,42 @@ public class MovieDetailActivity extends AppCompatActivity {
         trailersRecycler.setLayoutManager(presenter.getRecyclerLayoutManager());
         presenter.loadTrailersAdapter(null);
 
+        reviewsRcycler.setLayoutManager(presenter.getRecyclerLayoutManager());
+        presenter.loadReviewsAdapter(null);
+
+        reviewsRcycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                int itemsCount = layoutManager.getItemCount();
+                int lastPosition = layoutManager.findLastVisibleItemPosition();
+
+                if (itemsCount <= (lastPosition + listThreshold)) {
+                    presenter.nextReviewsPage();
+                }
+            }
+        });
+
     }
 
     public void toggleLoading() {
         if (loading) {
-            trailersProgress.show();
-            trailersProgress.setVisibility(View.VISIBLE);
+            listLoading.show();
+            listLoading.setVisibility(View.VISIBLE);
         } else {
-            trailersProgress.hide();
-            trailersProgress.setVisibility(View.GONE);
+            listLoading.hide();
+            listLoading.setVisibility(View.GONE);
         }
 
     }
 
     public void setTrailersRecyclerAdapter(TrailerAdapter trailerAdapter) {
         trailersRecycler.setAdapter(trailerAdapter);
+    }
+
+    public void setReviewsRecyclerAdapter(ReviewsAdapter reviewAdapter) {
+        reviewsRcycler.setAdapter(reviewAdapter);
     }
 }
