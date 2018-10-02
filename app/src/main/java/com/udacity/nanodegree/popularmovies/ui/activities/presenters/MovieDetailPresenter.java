@@ -10,6 +10,9 @@ import com.udacity.nanodegree.popularmovies.data.ReviewDTO;
 import com.udacity.nanodegree.popularmovies.data.ReviewResultDTO;
 import com.udacity.nanodegree.popularmovies.data.TrailerDTO;
 import com.udacity.nanodegree.popularmovies.data.VideosResultDTO;
+import com.udacity.nanodegree.popularmovies.database.AppDatabase;
+import com.udacity.nanodegree.popularmovies.database.DAOs.MovieDao;
+import com.udacity.nanodegree.popularmovies.database.entities.MovieEntity;
 import com.udacity.nanodegree.popularmovies.services.MoviesService;
 import com.udacity.nanodegree.popularmovies.ui.activities.MovieDetailActivity;
 import com.udacity.nanodegree.popularmovies.ui.activities.adapters.ReviewsAdapter;
@@ -24,17 +27,28 @@ import retrofit2.Response;
 
 public class MovieDetailPresenter {
 
-    private final MoviesService moviesService;
+    private MoviesService moviesService;
     private TrailerAdapter trailerAdapter;
     private ReviewsAdapter reviewAdapter;
-    private final MovieDetailActivity activity;
-    private final MovieDTO movie;
+    private MovieDetailActivity activity;
+    private MovieEntity movie;
     private int reviewsPage = 1;
+    private MovieDao movieDao;
 
     public MovieDetailPresenter(MovieDetailActivity movieDetailActivity, MovieDTO movie) {
+        this.movie = new MovieEntity(movie);
+        addValues(movieDetailActivity);
+    }
+
+    public MovieDetailPresenter(MovieDetailActivity movieDetailActivity, MovieEntity movie) {
+        this.movie = movie;
+        addValues(movieDetailActivity);
+    }
+
+    private void addValues(MovieDetailActivity movieDetailActivity) {
         this.activity = movieDetailActivity;
         this.moviesService = RetrofitUtils.getMoviesService();
-        this.movie = movie;
+        this.movieDao = AppDatabase.getInstance(movieDetailActivity).movieDao();
     }
 
     public RecyclerView.LayoutManager getRecyclerLayoutManager() {
@@ -128,5 +142,20 @@ public class MovieDetailPresenter {
 
     public void setReviewPage(int page) {
         reviewsPage = page;
+    }
+
+    public boolean isFavorite() {
+        MovieEntity entity = movieDao.getMovieById(movie.getId());
+        return entity != null;
+    }
+
+    public void favoriteMovie() {
+        if (isFavorite()) {
+            movieDao.removeMovie(movie);
+            activity.unfillStar();
+        } else {
+            movieDao.insert(movie);
+            activity.fillStar();
+        }
     }
 }

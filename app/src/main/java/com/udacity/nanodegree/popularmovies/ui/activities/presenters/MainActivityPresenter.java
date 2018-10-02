@@ -8,15 +8,22 @@ import android.support.v7.widget.RecyclerView;
 
 import com.udacity.nanodegree.popularmovies.R;
 import com.udacity.nanodegree.popularmovies.data.MovieDTO;
+import com.udacity.nanodegree.popularmovies.database.AppDatabase;
+import com.udacity.nanodegree.popularmovies.database.DAOs.MovieDao;
+import com.udacity.nanodegree.popularmovies.database.entities.MovieEntity;
 import com.udacity.nanodegree.popularmovies.services.MoviesService;
 import com.udacity.nanodegree.popularmovies.data.MoviesResultDTO;
 import com.udacity.nanodegree.popularmovies.ui.activities.MainActivity;
+import com.udacity.nanodegree.popularmovies.ui.activities.adapters.FavoritesAdapter;
 import com.udacity.nanodegree.popularmovies.ui.activities.adapters.MoviesAdapter;
 import com.udacity.nanodegree.popularmovies.utils.LayoutUtils;
 import com.udacity.nanodegree.popularmovies.utils.RetrofitUtils;
 
 import java.util.List;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -25,13 +32,16 @@ public class MainActivityPresenter {
 
     private final MainActivity mainActivity;
     private final MoviesService moviesService;
+    private final MovieDao movieDao;
 
     private int page = 1;
     private String query;
+    private Disposable moviesSubscribe;
 
     public MainActivityPresenter(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
         this.moviesService = RetrofitUtils.getMoviesService();
+        this.movieDao = AppDatabase.getInstance(mainActivity).movieDao();
     }
 
     public RecyclerView.LayoutManager getRecyclerLayoutManager() {
@@ -39,6 +49,13 @@ public class MainActivityPresenter {
                 LinearLayoutManager.VERTICAL, false);
     }
 
+
+    public void loadMoviesAdapter(String query, int page) {
+        mainActivity.loading = true;
+        mainActivity.toggleLoading();
+
+        loadFromService(query, page);
+    }
 
     public void loadMoviesAdapter(@Nullable List<MovieDTO> items) {
         mainActivity.loading = true;
@@ -51,11 +68,35 @@ public class MainActivityPresenter {
             mainActivity.loading = false;
             mainActivity.toggleLoading();
             mainActivity.setMoviesRecyclerAdapter(new MoviesAdapter());
-            mainActivity.adapter.setItems(items);
+            mainActivity.moviesAdapter.setItems(items);
             return;
         }
 
-        moviesService.getMovies(query, this.page).enqueue(new Callback<MoviesResultDTO>() {
+        loadFromService(query, this.page);
+    }
+
+    public void loadFavoritesAdapter(@Nullable List<MovieEntity> items) {
+        mainActivity.loading = true;
+        mainActivity.toggleLoading();
+
+        if (items != null) {
+            mainActivity.loading = false;
+            mainActivity.toggleLoading();
+            mainActivity.setMoviesRecyclerAdapter(new FavoritesAdapter());
+            mainActivity.favoritesAdapter.setItems(items);
+            return;
+        }
+
+        this.moviesSubscribe = movieDao.findAll().subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()).subscribe(favorites -> {
+                    mainActivity.loading = false;
+                    mainActivity.toggleLoading();
+                    mainActivity.setMoviesRecyclerAdapter(new FavoritesAdapter(favorites));
+                });
+    }
+
+    private void loadFromService(String query, int page) {
+        moviesService.getMovies(query, page).enqueue(new Callback<MoviesResultDTO>() {
             @Override
             public void onResponse(@NonNull Call<MoviesResultDTO> call, @NonNull Response<MoviesResultDTO> response) {
                 mainActivity.loading = false;
@@ -77,14 +118,14 @@ public class MainActivityPresenter {
         moviesService.getMovies(string, page).enqueue(new Callback<MoviesResultDTO>() {
             @Override
             public void onResponse(@NonNull Call<MoviesResultDTO> call, @NonNull Response<MoviesResultDTO> response) {
-                if (mainActivity.adapter == null) {
+                if (mainActivity.moviesAdapter == null) {
                     mainActivity.setMoviesRecyclerAdapter(new MoviesAdapter());
                 }
 
                 if (page <= 1) {
-                    mainActivity.adapter.filterMovies(response.body());
+                    mainActivity.moviesAdapter.filterMovies(response.body());
                 } else {
-                    mainActivity.adapter.addMovies(response.body());
+                    mainActivity.moviesAdapter.addMovies(response.body());
                 }
 
                 mainActivity.loading = false;
@@ -116,5 +157,10 @@ public class MainActivityPresenter {
 
     public void setPage(int page) {
         this.page = page;
+    }
+
+    public void disposeFavoritesSubscribe() {
+        if (moviesSubscribe != null)
+            moviesSubscribe.dispose();
     }
 }

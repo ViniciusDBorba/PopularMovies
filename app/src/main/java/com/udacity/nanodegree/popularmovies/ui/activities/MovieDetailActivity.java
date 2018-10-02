@@ -3,6 +3,7 @@ package com.udacity.nanodegree.popularmovies.ui.activities;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +20,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.udacity.nanodegree.popularmovies.BuildConfig;
 import com.udacity.nanodegree.popularmovies.R;
 import com.udacity.nanodegree.popularmovies.data.MovieDTO;
+import com.udacity.nanodegree.popularmovies.database.entities.MovieEntity;
 import com.udacity.nanodegree.popularmovies.ui.activities.adapters.ReviewsAdapter;
 import com.udacity.nanodegree.popularmovies.ui.activities.adapters.TrailerAdapter;
 import com.udacity.nanodegree.popularmovies.ui.activities.presenters.MovieDetailPresenter;
@@ -26,6 +28,7 @@ import com.udacity.nanodegree.popularmovies.ui.components.SaveInstanceRecyclerVi
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class MovieDetailActivity extends AppCompatActivity {
     public static String MOVIE_EXTRA = "MOVIE";
@@ -46,12 +49,14 @@ public class MovieDetailActivity extends AppCompatActivity {
     SaveInstanceRecyclerView reviewsRcycler;
     @BindView(R.id.list_progres)
     ContentLoadingProgressBar listLoading;
+    @BindView(R.id.favorite_button)
+    FloatingActionButton favoriteButton;
 
     public boolean loading = false;
 
     private MovieDetailPresenter presenter;
 
-    private MovieDTO movie;
+    private MovieEntity movie;
 
     private int listThreshold = 3;
 
@@ -108,6 +113,12 @@ public class MovieDetailActivity extends AppCompatActivity {
         voteAverage.setText(String.valueOf(movie.getVoteAverage()));
         releaseDate.setText(getResources().getString(R.string.release_date, movie.getReleaseDate()));
 
+        if (presenter.isFavorite()) {
+            fillStar();
+        } else {
+            unfillStar();
+        }
+
         trailersRecycler.setLayoutManager(presenter.getRecyclerLayoutManager());
         presenter.loadTrailersAdapter(null);
 
@@ -129,6 +140,8 @@ public class MovieDetailActivity extends AppCompatActivity {
             }
         });
 
+
+
     }
 
     public void toggleLoading() {
@@ -148,5 +161,18 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     public void setReviewsRecyclerAdapter(ReviewsAdapter reviewAdapter) {
         reviewsRcycler.setAdapter(reviewAdapter);
+    }
+
+    @OnClick(R.id.favorite_button)
+    public void onClickFavorite() {
+        presenter.favoriteMovie();
+    }
+
+    public void unfillStar() {
+        favoriteButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_star));
+    }
+
+    public void fillStar() {
+        favoriteButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_sta_fill));
     }
 }

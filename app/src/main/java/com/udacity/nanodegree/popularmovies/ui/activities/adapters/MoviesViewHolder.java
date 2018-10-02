@@ -15,6 +15,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.udacity.nanodegree.popularmovies.BuildConfig;
 import com.udacity.nanodegree.popularmovies.R;
 import com.udacity.nanodegree.popularmovies.data.MovieDTO;
+import com.udacity.nanodegree.popularmovies.database.entities.MovieEntity;
 import com.udacity.nanodegree.popularmovies.ui.activities.MainActivity;
 import com.udacity.nanodegree.popularmovies.ui.activities.MovieDetailActivity;
 
@@ -27,7 +28,7 @@ public class MoviesViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.movie_image)
     ImageView moviePoster;
 
-    private MovieDTO movie;
+    private MovieEntity movie;
 
 
     MoviesViewHolder(@NonNull View itemView) {
@@ -36,6 +37,20 @@ public class MoviesViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bind(MovieDTO item) {
+        this.movie = new MovieEntity(item);
+
+        RequestOptions requestOptions = new RequestOptions();
+        requestOptions = requestOptions
+                .centerCrop()
+                .diskCacheStrategy(DiskCacheStrategy.ALL);
+
+        Glide.with(itemView.getContext())
+                .load(BuildConfig.IMAGE_BASE_URL + item.getPosterPath())
+                .apply(requestOptions)
+                .into(moviePoster);
+    }
+
+    public void bind(MovieEntity item) {
         this.movie = item;
 
         RequestOptions requestOptions = new RequestOptions();

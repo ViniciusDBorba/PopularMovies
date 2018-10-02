@@ -212,7 +212,7 @@ public class MovieDTO implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeFloat(id);
+        dest.writeInt(id);
         dest.writeFloat(voteCount);
         dest.writeByte((byte) (video ? 1 : 0));
         dest.writeFloat(voteAverage);

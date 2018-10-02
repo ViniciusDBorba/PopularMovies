@@ -14,6 +14,8 @@ import android.widget.Toast;
 
 import com.udacity.nanodegree.popularmovies.R;
 import com.udacity.nanodegree.popularmovies.data.MovieDTO;
+import com.udacity.nanodegree.popularmovies.database.entities.MovieEntity;
+import com.udacity.nanodegree.popularmovies.ui.activities.adapters.FavoritesAdapter;
 import com.udacity.nanodegree.popularmovies.ui.activities.adapters.MoviesAdapter;
 import com.udacity.nanodegree.popularmovies.ui.activities.presenters.MainActivityPresenter;
 import com.udacity.nanodegree.popularmovies.utils.InternetCheckerAsyncTask;
@@ -35,13 +37,16 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView moviesRecycler;
     @BindView(R.id.right_option)
     TextView mostRatedOption;
+    @BindView(R.id.center_option)
+    TextView favoriteOption;
     @BindView(R.id.left_option)
     TextView popularOption;
     @BindView(R.id.movies_progres)
     ContentLoadingProgressBar moviesProgress;
 
     private MainActivityPresenter presenter;
-    public MoviesAdapter adapter;
+    public MoviesAdapter moviesAdapter;
+    public FavoritesAdapter favoritesAdapter;
 
 
     public boolean loading = false;
@@ -71,13 +76,13 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        if (adapter == null) {
+        if (moviesAdapter == null && favoritesAdapter == null) {
             return;
         }
 
         outState.putInt(PAGE_STATE, presenter.getPage());
         outState.putString(QUERY_STATE, presenter.getQuery());
-        outState.putParcelableArrayList(ITEMS_STATE, adapter.getItems());
+        outState.putParcelableArrayList(ITEMS_STATE, moviesAdapter == null ? favoritesAdapter.getItems() : moviesAdapter.getItems());
         super.onSaveInstanceState(outState);
     }
 
@@ -85,26 +90,19 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        if (adapter != null)
+        if (moviesAdapter != null || favoritesAdapter != null)
             return;
 
         moviesRecycler.setLayoutManager(presenter.getRecyclerLayoutManager());
         presenter.loadMoviesAdapter(null);
 
-        moviesRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
+        refreshRecyclerScrollListener();
+    }
 
-                GridLayoutManager layoutManager = (GridLayoutManager) recyclerView.getLayoutManager();
-                int itemsCount = layoutManager.getItemCount();
-                int lastPosition = layoutManager.findLastVisibleItemPosition();
-
-                if (itemsCount <= (lastPosition + listThreshold)) {
-                    presenter.nextPage();
-                }
-            }
-        });
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.disposeFavoritesSubscribe();
     }
 
     public void refresh(Bundle state) {
@@ -118,18 +116,118 @@ public class MainActivity extends AppCompatActivity {
         presenter.setQuery(query);
 
         if (query.equals(getResources().getString(R.string.query_popular))) {
-            mostRatedOption.setTextColor(getResources().getColor(R.color.font_disabled));
             popularOption.setTextColor(Color.WHITE);
-        } else {
+            mostRatedOption.setTextColor(getResources().getColor(R.color.font_disabled));
+            favoriteOption.setTextColor(getResources().getColor(R.color.font_disabled));
+
+        } else if (query.equals(getResources().getString(R.string.query_top_rated))) {
             mostRatedOption.setTextColor(Color.WHITE);
             popularOption.setTextColor(getResources().getColor(R.color.font_disabled));
+            favoriteOption.setTextColor(getResources().getColor(R.color.font_disabled));
+
+        } else {
+            favoriteOption.setTextColor(Color.WHITE);
+            popularOption.setTextColor(getResources().getColor(R.color.font_disabled));
+            mostRatedOption.setTextColor(getResources().getColor(R.color.font_disabled));
         }
 
         presenter.setPage(state.getInt(PAGE_STATE));
+
+        if (query.equals(getResources().getString(R.string.query_favorites))) {
+            loadFavorites(state);
+        } else {
+            loadMovies(state);
+        }
+    }
+
+    private void loadMovies(Bundle state) {
         List<MovieDTO> items = state.getParcelableArrayList(ITEMS_STATE);
 
         presenter.loadMoviesAdapter(items);
 
+        refreshRecyclerScrollListener();
+    }
+
+    private void loadFavorites(Bundle state) {
+        List<MovieEntity> items = state.getParcelableArrayList(ITEMS_STATE);
+
+        presenter.loadFavoritesAdapter(items);
+    }
+
+    public void setMoviesRecyclerAdapter(MoviesAdapter moviesAdapter) {
+        this.moviesAdapter = moviesAdapter;
+        moviesRecycler.setAdapter(moviesAdapter);
+    }
+
+    public void setMoviesRecyclerAdapter(FavoritesAdapter favoritesAdapter) {
+        this.favoritesAdapter = favoritesAdapter;
+        moviesRecycler.swapAdapter(favoritesAdapter, true);
+    }
+
+    @OnClick(R.id.right_option)
+    public void onClickMostRated() {
+        scrollToTop();
+
+        if (mostRatedOption.getCurrentTextColor() == Color.WHITE)
+            return;
+
+        if (isFavoriteSelected()) {
+            refreshRecyclerScrollListener();
+            presenter.loadMoviesAdapter(getResources().getString(R.string.query_top_rated), 1);
+
+            popularOption.setTextColor(getResources().getColor(R.color.font_disabled));
+            favoriteOption.setTextColor(getResources().getColor(R.color.font_disabled));
+            mostRatedOption.setTextColor(Color.WHITE);
+
+            return;
+        }
+
+        popularOption.setTextColor(getResources().getColor(R.color.font_disabled));
+        favoriteOption.setTextColor(getResources().getColor(R.color.font_disabled));
+        mostRatedOption.setTextColor(Color.WHITE);
+
+        presenter.filterMovies(getResources().getString(R.string.query_top_rated), 1);
+    }
+
+    @OnClick(R.id.left_option)
+    public void onClickPopular() {
+        scrollToTop();
+
+        if (popularOption.getCurrentTextColor() == Color.WHITE)
+            return;
+
+        if (isFavoriteSelected()) {
+            refreshRecyclerScrollListener();
+            presenter.loadMoviesAdapter(getResources().getString(R.string.query_popular), 1);
+
+            mostRatedOption.setTextColor(getResources().getColor(R.color.font_disabled));
+            favoriteOption.setTextColor(getResources().getColor(R.color.font_disabled));
+            popularOption.setTextColor(Color.WHITE);
+            return;
+        }
+
+        mostRatedOption.setTextColor(getResources().getColor(R.color.font_disabled));
+        favoriteOption.setTextColor(getResources().getColor(R.color.font_disabled));
+        popularOption.setTextColor(Color.WHITE);
+
+        presenter.filterMovies(getResources().getString(R.string.query_popular), 1);
+    }
+
+    @OnClick(R.id.center_option)
+    public void onClickFavorite() {
+        scrollToTop();
+
+        if (favoriteOption.getCurrentTextColor() == Color.WHITE)
+            return;
+
+        mostRatedOption.setTextColor(getResources().getColor(R.color.font_disabled));
+        popularOption.setTextColor(getResources().getColor(R.color.font_disabled));
+        favoriteOption.setTextColor(Color.WHITE);
+
+        presenter.loadFavoritesAdapter(null);
+    }
+
+    private void refreshRecyclerScrollListener() {
         moviesRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
@@ -146,36 +244,8 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void setMoviesRecyclerAdapter(MoviesAdapter moviesAdapter) {
-        this.adapter = moviesAdapter;
-        moviesRecycler.setAdapter(moviesAdapter);
-    }
-
-    @OnClick(R.id.right_option)
-    public void onClickMostRated() {
-        scrollToTop();
-
-        if (mostRatedOption.getCurrentTextColor() == Color.WHITE)
-            return;
-
-        mostRatedOption.setTextColor(Color.WHITE);
-        popularOption.setTextColor(getResources().getColor(R.color.font_disabled));
-
-        presenter.filterMovies(getResources().getString(R.string.query_top_rated), 1);
-    }
-
-    @OnClick(R.id.left_option)
-    public void onClickPopular() {
-        scrollToTop();
-
-        if (popularOption.getCurrentTextColor() == Color.WHITE)
-            return;
-
-
-        mostRatedOption.setTextColor(getResources().getColor(R.color.font_disabled));
-        popularOption.setTextColor(Color.WHITE);
-
-        presenter.filterMovies(getResources().getString(R.string.query_popular), 1);
+    private boolean isFavoriteSelected() {
+        return favoriteOption.getCurrentTextColor() == Color.WHITE;
     }
 
     private void scrollToTop() {

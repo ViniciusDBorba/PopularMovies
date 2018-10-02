@@ -3,18 +3,24 @@ package com.udacity.nanodegree.popularmovies.database.entities;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
+import android.graphics.Movie;
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.udacity.nanodegree.popularmovies.data.MovieDTO;
 
 import io.reactivex.annotations.NonNull;
 
 @Entity(tableName = "movie")
-public class MovieEntity {
+public class MovieEntity implements Parcelable {
+
 
     @PrimaryKey
     private int id;
     private int voteCount;
-    private boolean video;
     private float voteAverage;
     private String title;
+    private boolean video;
     private float popularity;
     private String posterPath;
     private String originalLanguage;
@@ -29,12 +35,12 @@ public class MovieEntity {
     }
 
     @Ignore
-    public MovieEntity(int id, int voteCount, boolean video, float voteAverage, String title, float popularity, String posterPath, String originalLanguage, String originalTitle, String backdropPath, boolean adult, String overview, String releaseDate) {
+    public MovieEntity(int id, int voteCount, float voteAverage, String title, boolean video, float popularity, String posterPath, String originalLanguage, String originalTitle, String backdropPath, boolean adult, String overview, String releaseDate) {
         this.id = id;
         this.voteCount = voteCount;
-        this.video = video;
         this.voteAverage = voteAverage;
         this.title = title;
+        this.video = video;
         this.popularity = popularity;
         this.posterPath = posterPath;
         this.originalLanguage = originalLanguage;
@@ -43,6 +49,38 @@ public class MovieEntity {
         this.adult = adult;
         this.overview = overview;
         this.releaseDate = releaseDate;
+    }
+
+    protected MovieEntity(Parcel in) {
+        id = in.readInt();
+        voteCount = in.readInt();
+        video = in.readByte() != 0;
+        voteAverage = in.readFloat();
+        title = in.readString();
+        popularity = in.readFloat();
+        posterPath = in.readString();
+        originalLanguage = in.readString();
+        originalTitle = in.readString();
+        backdropPath = in.readString();
+        adult = in.readByte() != 0;
+        overview = in.readString();
+        releaseDate = in.readString();
+    }
+
+    public MovieEntity(MovieDTO movie) {
+        this.id = movie.getId();
+        this.voteCount = movie.getVoteCount();
+        this.voteAverage = movie.getVoteAverage();
+        this.title = movie.getTitle();
+        this.video = movie.isVideo();
+        this.popularity = movie.getPopularity();
+        this.posterPath = movie.getPosterPath();
+        this.originalLanguage = movie.getOriginalLanguage();
+        this.originalTitle = movie.getOriginalTitle();
+        this.backdropPath = movie.getBackdropPath();
+        this.adult = movie.isAdult();
+        this.overview = movie.getOverview();
+        this.releaseDate = movie.getReleaseDate();
     }
 
     public int getId() {
@@ -61,14 +99,6 @@ public class MovieEntity {
         this.voteCount = voteCount;
     }
 
-    public boolean isVideo() {
-        return video;
-    }
-
-    public void setVideo(boolean video) {
-        this.video = video;
-    }
-
     public float getVoteAverage() {
         return voteAverage;
     }
@@ -83,6 +113,14 @@ public class MovieEntity {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public boolean isVideo() {
+        return video;
+    }
+
+    public void setVideo(boolean video) {
+        this.video = video;
     }
 
     public float getPopularity() {
@@ -148,4 +186,38 @@ public class MovieEntity {
     public void setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeFloat(voteCount);
+        dest.writeByte((byte) (video ? 1 : 0));
+        dest.writeFloat(voteAverage);
+        dest.writeString(title);
+        dest.writeFloat(popularity);
+        dest.writeString(posterPath);
+        dest.writeString(originalLanguage);
+        dest.writeString(originalTitle);
+        dest.writeString(backdropPath);
+        dest.writeByte((byte) (adult ? 1 : 0));
+        dest.writeString(overview);
+        dest.writeString(releaseDate);
+    }
+
+    public static final Creator<MovieEntity> CREATOR = new Creator<MovieEntity>() {
+        @Override
+        public MovieEntity createFromParcel(Parcel in) {
+            return new MovieEntity(in);
+        }
+
+        @Override
+        public MovieEntity[] newArray(int size) {
+            return new MovieEntity[size];
+        }
+    };
 }

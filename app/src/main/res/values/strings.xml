@@ -2,6 +2,7 @@
     <string name="app_name">PopularMovies</string>
     <string name="query_popular">popular</string>
     <string name="query_top_rated">top_rated</string>
+    <string name="query_favorites">Favoritos</string>
     <string name="item_movie_poster_view_description">Capa do filme</string>
     <string name="movie_title">Movie Title</string>
     <string name="popular">Populares</string>

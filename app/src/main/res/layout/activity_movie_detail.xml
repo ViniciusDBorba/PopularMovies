@@ -34,11 +34,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/item_movie_poster_view_description"
-            android:minHeight="400dp"
             android:minWidth="200dp"
+            android:minHeight="400dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/favorite_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/default_margin"
+            android:backgroundTint="@color/colorPrimaryDark"
+            android:src="@drawable/ic_star"
+            app:fabSize="mini"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/movie_poster" />
 
         <TextView
             android:id="@+id/movie_title"
@@ -50,7 +61,7 @@
             android:textStyle="bold"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/movie_poster"/>
+            app:layout_constraintTop_toBottomOf="@+id/movie_poster" />
 
         <TextView
             android:id="@+id/movie_overview"
@@ -61,7 +72,7 @@
             android:textColor="@android:color/white"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/movie_title"/>
+            app:layout_constraintTop_toBottomOf="@+id/movie_title" />
 
         <TextView
             android:id="@+id/movie_release_date"
@@ -71,7 +82,7 @@
             android:textColor="@android:color/white"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/movie_overview"/>
+            app:layout_constraintTop_toBottomOf="@id/movie_overview" />
 
         <com.udacity.nanodegree.popularmovies.ui.components.SaveInstanceRecyclerView
             android:id="@+id/trailers_recycler"
