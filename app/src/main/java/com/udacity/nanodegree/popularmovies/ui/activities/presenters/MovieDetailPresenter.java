@@ -2,8 +2,6 @@ package com.udacity.nanodegree.popularmovies.ui.activities.presenters;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 
 import com.udacity.nanodegree.popularmovies.data.MovieDTO;
 import com.udacity.nanodegree.popularmovies.data.ReviewDTO;
@@ -49,10 +47,6 @@ public class MovieDetailPresenter {
         this.activity = movieDetailActivity;
         this.moviesService = RetrofitUtils.getMoviesService();
         this.movieDao = AppDatabase.getInstance(movieDetailActivity).movieDao();
-    }
-
-    public RecyclerView.LayoutManager getRecyclerLayoutManager() {
-        return new LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false);
     }
 
     public void loadTrailersAdapter(@Nullable List<TrailerDTO> items) {
@@ -151,7 +145,7 @@ public class MovieDetailPresenter {
 
     public void favoriteMovie() {
         if (isFavorite()) {
-            movieDao.removeMovie(movie);
+            movieDao.remove(movie);
             activity.unfillStar();
         } else {
             movieDao.insert(movie);

@@ -1,123 +1,153 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/dark_gray">
 
-    <android.support.constraint.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <FrameLayout
-            android:id="@+id/vote_average_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/default_margin"
-            android:background="@drawable/round_accent_background"
-            android:padding="@dimen/default_padding"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/details_constraint"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/movie_vote_average"
+            <FrameLayout
+                android:id="@+id/vote_average_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_margin="@dimen/default_margin"
+                android:background="@drawable/round_accent_background"
+                android:padding="@dimen/default_padding"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/movie_vote_average"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+            </FrameLayout>
+
+
+            <ImageView
+                android:id="@+id/movie_poster"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/item_movie_poster_view_description"
+                android:minWidth="200dp"
+                android:minHeight="400dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/favorite_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/default_margin"
+                android:backgroundTint="@color/colorPrimaryDark"
+                android:src="@drawable/ic_star"
+                app:fabSize="mini"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/movie_poster" />
+
+            <TextView
+                android:id="@+id/movie_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="@dimen/default_padding"
                 android:textColor="@android:color/white"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-        </FrameLayout>
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/movie_poster" />
 
+            <TextView
+                android:id="@+id/movie_overview"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/default_padding"
+                android:text="@string/app_name"
+                android:textColor="@android:color/white"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/movie_title" />
 
-        <ImageView
-            android:id="@+id/movie_poster"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/item_movie_poster_view_description"
-            android:minWidth="200dp"
-            android:minHeight="400dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/movie_release_date"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/default_padding"
+                android:textColor="@android:color/white"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/movie_overview" />
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/favorite_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/default_margin"
-            android:backgroundTint="@color/colorPrimaryDark"
-            android:src="@drawable/ic_star"
-            app:fabSize="mini"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/movie_poster" />
-
-        <TextView
-            android:id="@+id/movie_title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:padding="@dimen/default_padding"
-            android:textColor="@android:color/white"
-            android:textStyle="bold"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/movie_poster" />
+        </android.support.constraint.ConstraintLayout>
 
         <TextView
-            android:id="@+id/movie_overview"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_margin"
+            android:gravity="center_vertical"
             android:padding="@dimen/default_padding"
-            android:text="@string/app_name"
+            android:text="@string/trailers_title"
             android:textColor="@android:color/white"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/movie_title" />
+            android:textSize="@dimen/default_subtitle"
+            android:textStyle="bold" />
+
+        <android.support.v4.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.udacity.nanodegree.popularmovies.ui.components.SaveInstanceRecyclerView
+                android:id="@+id/trailers_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/dark_gray"
+                android:padding="@dimen/item_margim">
+
+            </com.udacity.nanodegree.popularmovies.ui.components.SaveInstanceRecyclerView>
+        </android.support.v4.widget.NestedScrollView>
 
         <TextView
-            android:id="@+id/movie_release_date"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_margin"
+            android:gravity="center_vertical"
             android:padding="@dimen/default_padding"
+            android:text="@string/reviews_title"
             android:textColor="@android:color/white"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/movie_overview" />
+            android:textSize="@dimen/default_subtitle"
+            android:textStyle="bold" />
 
-        <com.udacity.nanodegree.popularmovies.ui.components.SaveInstanceRecyclerView
-            android:id="@+id/trailers_recycler"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:background="@color/dark_gray"
-            android:padding="@dimen/item_margim"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/movie_release_date">
+        <android.support.v4.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        </com.udacity.nanodegree.popularmovies.ui.components.SaveInstanceRecyclerView>
+            <com.udacity.nanodegree.popularmovies.ui.components.SaveInstanceRecyclerView
+                android:id="@+id/reviews_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/dark_gray"
+                android:padding="@dimen/item_margim">
 
-        <com.udacity.nanodegree.popularmovies.ui.components.SaveInstanceRecyclerView
-            android:id="@+id/reviews_recycler"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:background="@color/dark_gray"
-            android:padding="@dimen/item_margim"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/trailers_recycler">
-
-        </com.udacity.nanodegree.popularmovies.ui.components.SaveInstanceRecyclerView>
+            </com.udacity.nanodegree.popularmovies.ui.components.SaveInstanceRecyclerView>
+        </android.support.v4.widget.NestedScrollView>
 
         <android.support.v4.widget.ContentLoadingProgressBar
             android:id="@+id/list_progres"
             style="@style/Widget.AppCompat.ProgressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
-
-    </android.support.constraint.ConstraintLayout>
-
-</android.support.v4.widget.NestedScrollView>
+            android:visibility="gone" />
+    </LinearLayout>
+</ScrollView>

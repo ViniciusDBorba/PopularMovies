@@ -6,4 +6,6 @@
     <dimen name="item_margim">2dp</dimen>
     <dimen name="default_padding">5dp</dimen>
     <dimen name="default_margin">10dp</dimen>
+    <dimen name="separator">1dp</dimen>
+    <dimen name="default_subtitle">18sp</dimen>
 </resources>

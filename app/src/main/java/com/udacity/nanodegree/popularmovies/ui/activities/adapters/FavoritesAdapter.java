@@ -16,7 +16,7 @@ public class FavoritesAdapter extends RecyclerView.Adapter<MoviesViewHolder> {
     private List<MovieEntity> movies = new ArrayList<>();
 
     public FavoritesAdapter(List<MovieEntity> movies) {
-        this.movies.addAll(movies);
+        this.movies = movies;
     }
 
     public FavoritesAdapter() {

@@ -18,7 +18,8 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsViewHolder> {
     List<ReviewDTO> reviews = new ArrayList<>();
 
     public ReviewsAdapter(ReviewResultDTO reviewResultDTO) {
-        this.reviews.addAll(reviewResultDTO.getResults());
+        this.reviews = reviewResultDTO.getResults();
+        notifyDataSetChanged();
     }
 
     public ReviewsAdapter() {

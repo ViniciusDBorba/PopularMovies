@@ -1,5 +1,6 @@
 package com.udacity.nanodegree.popularmovies.ui.activities;
 
+import android.arch.lifecycle.LifecycleOwner;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -7,6 +8,7 @@ import android.support.v4.util.Consumer;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
@@ -19,6 +21,7 @@ import com.udacity.nanodegree.popularmovies.ui.activities.adapters.FavoritesAdap
 import com.udacity.nanodegree.popularmovies.ui.activities.adapters.MoviesAdapter;
 import com.udacity.nanodegree.popularmovies.ui.activities.presenters.MainActivityPresenter;
 import com.udacity.nanodegree.popularmovies.utils.InternetCheckerAsyncTask;
+import com.udacity.nanodegree.popularmovies.utils.LayoutUtils;
 
 import java.util.List;
 
@@ -26,7 +29,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LifecycleOwner {
 
     private static final String QUERY_STATE = "QUERY_STATE";
     private static final String PAGE_STATE = "PAGE_STATE";
@@ -64,12 +67,9 @@ public class MainActivity extends AppCompatActivity {
             refresh(savedInstanceState);
         }
 
-        new InternetCheckerAsyncTask(new Consumer<Boolean>() {
-            @Override
-            public void accept(Boolean internet) {
-                if (!internet){
-                    Toast.makeText(MainActivity.this, MainActivity.this.getResources().getString(R.string.no_internet), Toast.LENGTH_LONG).show();
-                }
+        new InternetCheckerAsyncTask(internet -> {
+            if (!internet) {
+                Toast.makeText(MainActivity.this, MainActivity.this.getResources().getString(R.string.no_internet), Toast.LENGTH_LONG).show();
             }
         }).execute();
     }
@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
 
         outState.putInt(PAGE_STATE, presenter.getPage());
         outState.putString(QUERY_STATE, presenter.getQuery());
-        outState.putParcelableArrayList(ITEMS_STATE, moviesAdapter == null ? favoritesAdapter.getItems() : moviesAdapter.getItems());
+        outState.putParcelableArrayList(ITEMS_STATE, moviesAdapter == null ? null : moviesAdapter.getItems());
         super.onSaveInstanceState(outState);
     }
 
@@ -93,7 +93,8 @@ public class MainActivity extends AppCompatActivity {
         if (moviesAdapter != null || favoritesAdapter != null)
             return;
 
-        moviesRecycler.setLayoutManager(presenter.getRecyclerLayoutManager());
+        moviesRecycler.setLayoutManager(new GridLayoutManager(this, LayoutUtils.getSpanCount(this),
+                LinearLayoutManager.VERTICAL, false));
         presenter.loadMoviesAdapter(null);
 
         refreshRecyclerScrollListener();
@@ -102,11 +103,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        presenter.disposeFavoritesSubscribe();
     }
 
     public void refresh(Bundle state) {
-        moviesRecycler.setLayoutManager(presenter.getRecyclerLayoutManager());
+        moviesRecycler.setLayoutManager(new GridLayoutManager(this, LayoutUtils.getSpanCount(this),
+                LinearLayoutManager.VERTICAL, false));
         String query = state.getString(QUERY_STATE);
 
         if (query == null) {
@@ -134,10 +135,11 @@ public class MainActivity extends AppCompatActivity {
         presenter.setPage(state.getInt(PAGE_STATE));
 
         if (query.equals(getResources().getString(R.string.query_favorites))) {
-            loadFavorites(state);
-        } else {
-            loadMovies(state);
+            return;
         }
+
+        loadMovies(state);
+
     }
 
     private void loadMovies(Bundle state) {
@@ -148,20 +150,22 @@ public class MainActivity extends AppCompatActivity {
         refreshRecyclerScrollListener();
     }
 
-    private void loadFavorites(Bundle state) {
-        List<MovieEntity> items = state.getParcelableArrayList(ITEMS_STATE);
-
-        presenter.loadFavoritesAdapter(items);
-    }
-
     public void setMoviesRecyclerAdapter(MoviesAdapter moviesAdapter) {
+        if (this.moviesAdapter != null) {
+            return;
+        }
+        this.favoritesAdapter = null;
         this.moviesAdapter = moviesAdapter;
         moviesRecycler.setAdapter(moviesAdapter);
     }
 
     public void setMoviesRecyclerAdapter(FavoritesAdapter favoritesAdapter) {
+        if (this.favoritesAdapter != null) {
+            return;
+        }
+        this.moviesAdapter = null;
         this.favoritesAdapter = favoritesAdapter;
-        moviesRecycler.swapAdapter(favoritesAdapter, true);
+        moviesRecycler.swapAdapter(favoritesAdapter, false);
     }
 
     @OnClick(R.id.right_option)
@@ -173,6 +177,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (isFavoriteSelected()) {
             refreshRecyclerScrollListener();
+            presenter.removeFavoritesObservable();
             presenter.loadMoviesAdapter(getResources().getString(R.string.query_top_rated), 1);
 
             popularOption.setTextColor(getResources().getColor(R.color.font_disabled));
@@ -198,6 +203,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (isFavoriteSelected()) {
             refreshRecyclerScrollListener();
+            presenter.removeFavoritesObservable();
             presenter.loadMoviesAdapter(getResources().getString(R.string.query_popular), 1);
 
             mostRatedOption.setTextColor(getResources().getColor(R.color.font_disabled));
@@ -217,7 +223,7 @@ public class MainActivity extends AppCompatActivity {
     public void onClickFavorite() {
         scrollToTop();
 
-        if (favoriteOption.getCurrentTextColor() == Color.WHITE)
+        if (isFavoriteSelected())
             return;
 
         mostRatedOption.setTextColor(getResources().getColor(R.color.font_disabled));
@@ -232,6 +238,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
+
+                if (MainActivity.this.moviesAdapter == null)
+                    return;
 
                 GridLayoutManager layoutManager = (GridLayoutManager) recyclerView.getLayoutManager();
                 int itemsCount = layoutManager.getItemCount();

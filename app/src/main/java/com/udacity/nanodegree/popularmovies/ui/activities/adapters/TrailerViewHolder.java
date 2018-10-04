@@ -16,14 +16,12 @@ import com.udacity.nanodegree.popularmovies.data.TrailerDTO;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class TrailerViewHolder extends RecyclerView.ViewHolder {
 
     private static final String TRAILER_MESSAGE = "See this movie trailer: \n." + BuildConfig.YOUTUBE_BASE_URL;
     private static final String TYPE = "text/plain";
-
-    @BindView(R.id.trailer_thumbnail)
-    ImageView thumbImg;
 
     @BindView(R.id.trailer_name)
     TextView trailerName;
@@ -41,6 +39,7 @@ public class TrailerViewHolder extends RecyclerView.ViewHolder {
         trailerName.setText(item.getName());
     }
 
+    @OnClick(R.id.trailer_root_layout)
     public void onClickItem(){
         AlertDialog builder = new AlertDialog.Builder(itemView.getContext())
                 .setTitle(itemView.getResources().getString(R.string.choose))
@@ -52,7 +51,7 @@ public class TrailerViewHolder extends RecyclerView.ViewHolder {
                                 break;
                             case 1:
                                 Intent sendIntent = new Intent();
-                                sendIntent.setAction(Intent.ACTION_SEND);
+                                sendIntent.setAction(Intent.ACTION_CHOOSER);
                                 sendIntent.putExtra(Intent.EXTRA_TEXT, String.format(TRAILER_MESSAGE, item.getKey()));
                                 sendIntent.setType(TYPE);
                                 itemView.getContext().startActivity(sendIntent);

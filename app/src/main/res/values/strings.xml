@@ -9,7 +9,9 @@
     <string name="top_rated">Mais votados</string>
     <string name="release_date">Release date: %s</string>
     <string name="no_internet">O app precisa de internet para buscar os filmes.</string>
-    <string name="choose">Choose...</string>
+    <string name="choose">Escolha...</string>
+    <string name="trailers_title">Videos:</string>
+    <string name="reviews_title">Análises:</string>
     <string-array name="trailer_options">
         <item>Open</item>
         <item>Share</item>

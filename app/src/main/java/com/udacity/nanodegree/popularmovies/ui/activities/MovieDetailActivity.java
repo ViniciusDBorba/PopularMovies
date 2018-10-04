@@ -90,7 +90,6 @@ public class MovieDetailActivity extends AppCompatActivity {
             movie = getIntent().getParcelableExtra(MOVIE_EXTRA);
             refreshView();
         }
-
     }
 
     private void refreshView() {
@@ -119,10 +118,8 @@ public class MovieDetailActivity extends AppCompatActivity {
             unfillStar();
         }
 
-        trailersRecycler.setLayoutManager(presenter.getRecyclerLayoutManager());
         presenter.loadTrailersAdapter(null);
 
-        reviewsRcycler.setLayoutManager(presenter.getRecyclerLayoutManager());
         presenter.loadReviewsAdapter(null);
 
         reviewsRcycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -140,8 +137,6 @@ public class MovieDetailActivity extends AppCompatActivity {
             }
         });
 
-
-
     }
 
     public void toggleLoading() {
@@ -157,10 +152,12 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     public void setTrailersRecyclerAdapter(TrailerAdapter trailerAdapter) {
         trailersRecycler.setAdapter(trailerAdapter);
+        trailersRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
     }
 
     public void setReviewsRecyclerAdapter(ReviewsAdapter reviewAdapter) {
         reviewsRcycler.setAdapter(reviewAdapter);
+        reviewsRcycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
     }
 
     @OnClick(R.id.favorite_button)

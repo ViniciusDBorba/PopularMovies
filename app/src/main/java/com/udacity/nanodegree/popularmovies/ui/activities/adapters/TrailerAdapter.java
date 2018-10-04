@@ -18,6 +18,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerViewHolder> {
 
     public TrailerAdapter(List<TrailerDTO> trailers) {
         this.trailers = trailers;
+        notifyDataSetChanged();
     }
 
     public TrailerAdapter() {
@@ -41,7 +42,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerViewHolder> {
 
     @Override
     public int getItemCount() {
-        if (trailers != null) {
+        if (trailers == null) {
             return 0;
         }
         return trailers.size();
